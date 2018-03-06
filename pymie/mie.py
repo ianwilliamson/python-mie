@@ -41,14 +41,13 @@ Small Particles" (1983)
 """
 import numpy as np
 from scipy.special import lpn, riccati_jn, riccati_yn, spherical_jn, spherical_yn
-from . import mie_specfuncs, ureg, Quantity
+from . import mie_specfuncs
 from .mie_specfuncs import DEFAULT_EPS1, DEFAULT_EPS2   # default tolerances
 from . import multilayer_sphere_lib as msl
 
 # User-facing functions for the most often calculated quantities (form factor,
 # efficiencies, asymmetry parameter)
 
-@ureg.check('[]', '[]', '[]') # all arguments should be dimensionless
 def calc_ang_dist(m, x, angles, mie = True, check = False):
     """
     Calculates the angular distribution of light intensity for parallel and
@@ -125,7 +124,6 @@ def calc_ang_dist(m, x, angles, mie = True, check = False):
 
     return ipar, iperp
 
-@ureg.check(None, None, '[length]', None, None)
 def calc_cross_sections(m, x, wavelen_media, eps1 = DEFAULT_EPS1,
                         eps2 = DEFAULT_EPS2):
     """
@@ -225,7 +223,6 @@ def calc_g(m, x):
     g = (4./(np.array(x).max()**2 * cscat)) * _asymmetry_parameter(coeffs[0], coeffs[1])
     return g
 
-@ureg.check(None, None, '[length]', ('[]','[]', '[]'))
 def calc_integrated_cross_section(m, x, wavelen_media, theta_range):
     """
     Calculate (dimensional) integrated cross section using quadrature
@@ -636,8 +633,7 @@ def diff_scat_intensity_complex_medium(m, x, theta, kd):
     return I_par.real, I_perp.real
 
 def integrate_intensity_complex_medium(I_par, I_perp, distance, theta, k,
-                                       phi_min=Quantity(0, 'rad'), 
-                                       phi_max=Quantity(2*np.pi, 'rad')):
+                                       phi_min=0, phi_max=2*np.pi):
     '''
     Calculates the scattering cross section by integrating the differential 
     scattered intensity obtained with the exact Mie solutions. The integration 
